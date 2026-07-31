@@ -1,6 +1,6 @@
 {
   "tool": "Kwand",
-  "updated": "2026-07-31T10:34:55.968Z",
+  "updated": "2026-07-31T10:35:10.597Z",
   "events": {
     "soiree-montage-salle-de-sport": {
       "title": "Soirée montage salle de sport",
@@ -66,6 +66,12 @@
           "2026-08-26",
           "2026-08-27",
           "2026-08-28"
+        ],
+        "Vincent": [
+          "2026-08-03",
+          "2026-08-04",
+          "2026-08-05",
+          "2026-08-06"
         ]
       }
     }
