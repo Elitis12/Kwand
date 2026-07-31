@@ -1,0 +1,13 @@
+{
+  "tool": "Kwand",
+  "updated": null,
+  "events": {
+    "soiree-montage-salle-de-sport": {
+      "title": "Soirée montage salle de sport",
+      "description": "On monte la salle de sport du bureau : plus on est de bras, plus vite c'est plié.",
+      "months": ["2026-08", "2026-09"],
+      "created": "2026-07-31T00:00:00Z",
+      "people": {}
+    }
+  }
+}

@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kwand · Konversational</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== Konversational brand tokens ===== */
+  :root {
+    --konv-salmon: #F69176;
+    --konv-salmon-light: #FEF2EF;
+    --konv-salmon-hover: #E87D5F;
+    --konv-purple: #6435CE;
+    --konv-purple-light: #B6C2F8;
+    --konv-purple-ice: #E2E7FC;
+    --konv-lavender: #C1AEEB;
+    --konv-black: #000000;
+    --konv-dark-gray: #333333;
+    --konv-mid-gray: #4A4A4A;
+    --konv-border: #E3E2DF;
+    --konv-white: #FFFFFF;
+    --konv-font: 'Sora', Arial, sans-serif;
+    --konv-radius: 8px;
+    --konv-radius-lg: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+
+  body {
+    font-family: var(--konv-font);
+    font-weight: 300;
+    color: var(--konv-dark-gray);
+    background: var(--konv-white);
+    line-height: 1.6;
+  }
+
+  h1, h2, h3 { font-weight: 700; color: var(--konv-black); line-height: 1.2; }
+  .konv-slash { color: var(--konv-salmon); font-weight: 700; margin-right: 0.25em; }
+
+  /* ===== Header ===== */
+  .konv-header {
+    background: var(--konv-black);
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .konv-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--konv-white);
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+  .konv-logo .mark { color: var(--konv-salmon); font-size: 1.2em; line-height: 1; }
+  .konv-header .tagline {
+    color: var(--konv-white);
+    font-size: 0.8rem;
+    font-weight: 300;
+    opacity: 0.85;
+  }
+
+  main { max-width: 1120px; margin: 0 auto; padding: 1.5rem 1.25rem 5rem; }
+
+  /* ===== Hero ===== */
+  .hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 2rem 0 1.5rem;
+  }
+  .hero h1 { font-size: clamp(1.7rem, 4vw, 2.6rem); }
+  .hero p { margin-top: 0.75rem; color: var(--konv-mid-gray); max-width: 40rem; }
+  .hero .art { flex-shrink: 0; }
+
+  /* ===== Read-only warning banner ===== */
+  .warning {
+    display: none;
+    background: var(--konv-salmon-light);
+    border-left: 4px solid var(--konv-salmon);
+    border-radius: var(--konv-radius);
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    margin-bottom: 1.25rem;
+  }
+  .warning.visible { display: block; }
+  .warning code { font-family: monospace; background: #fff; padding: 0 4px; border-radius: 4px; }
+
+  /* ===== Cards ===== */
+  .konv-card {
+    background: var(--konv-white);
+    border: 1px solid var(--konv-border);
+    border-radius: var(--konv-radius-lg);
+    padding: 1.25rem 1.5rem;
+  }
+  .konv-card-accent { border-left: 4px solid var(--konv-salmon); }
+
+  /* ===== Buttons ===== */
+  .konv-btn-primary {
+    background: var(--konv-salmon);
+    color: var(--konv-white);
+    border: none;
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--konv-radius);
+    font-family: var(--konv-font);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .konv-btn-primary:hover { background: var(--konv-salmon-hover); }
+  .konv-btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+  .konv-btn-outline {
+    background: transparent;
+    color: var(--konv-salmon);
+    border: 1.5px solid var(--konv-salmon);
+    padding: 0.55rem 1rem;
+    border-radius: var(--konv-radius);
+    font-family: var(--konv-font);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .konv-btn-outline:hover { background: var(--konv-salmon); color: var(--konv-white); }
+
+  /* ===== List view ===== */
+  .list-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .list-head h2 { font-size: 1.35rem; }
+
+  .create-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: flex-end;
+    margin-bottom: 1.25rem;
+    border-left: 4px solid var(--konv-purple);
+  }
+  .create-form .field { display: flex; flex-direction: column; gap: 0.2rem; }
+  .create-form label { font-size: 0.72rem; font-weight: 600; color: var(--konv-mid-gray); text-transform: uppercase; }
+  .create-form input {
+    font-family: var(--konv-font);
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+    border: 1.5px solid var(--konv-border);
+    border-radius: var(--konv-radius);
+    outline: none;
+  }
+  .create-form input:focus { border-color: var(--konv-purple); }
+  .create-form .grow { flex: 1 1 14rem; }
+
+  .event-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+  .event-card {
+    border-left: 4px solid var(--konv-salmon);
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.08s;
+  }
+  .event-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.1); transform: translateY(-1px); }
+  .event-card .title { font-weight: 600; color: var(--konv-black); font-size: 1rem; }
+  .event-card .period { font-size: 0.78rem; color: var(--konv-purple); font-weight: 600; margin-top: 0.15rem; }
+  .event-card .meta { font-size: 0.8rem; color: var(--konv-mid-gray); margin-top: 0.5rem; }
+  .event-card .go { margin-top: 0.6rem; font-size: 0.82rem; font-weight: 600; color: var(--konv-salmon); }
+  .list-empty { color: var(--konv-mid-gray); font-size: 0.9rem; }
+
+  /* ===== Event view ===== */
+  .back {
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    color: var(--konv-salmon);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+  .back:hover { color: var(--konv-salmon-hover); }
+  .ev-head { display: flex; align-items: baseline; gap: 0.9rem; flex-wrap: wrap; margin-bottom: 0.35rem; }
+  .ev-head h2 { font-size: 1.45rem; }
+  .ev-period {
+    background: var(--konv-purple-ice);
+    color: var(--konv-purple);
+    border-radius: 99px;
+    padding: 0.15rem 0.7rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .ev-desc { color: var(--konv-mid-gray); font-size: 0.9rem; margin-bottom: 1.25rem; max-width: 44rem; }
+
+  /* ===== Name + save bar (sticky) ===== */
+  .savebar {
+    position: sticky;
+    top: 0.5rem;
+    z-index: 50;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+    margin-bottom: 1.5rem;
+  }
+  .savebar label { font-weight: 600; font-size: 0.9rem; }
+  .savebar input {
+    font-family: var(--konv-font);
+    font-size: 0.95rem;
+    padding: 0.55rem 0.85rem;
+    border: 1.5px solid var(--konv-border);
+    border-radius: var(--konv-radius);
+    outline: none;
+    flex: 1 1 10rem;
+    min-width: 8rem;
+    max-width: 16rem;
+  }
+  .savebar input:focus { border-color: var(--konv-purple); }
+  .save-status { font-size: 0.78rem; color: var(--konv-mid-gray); flex-basis: 100%; }
+  .save-status .dirty { color: var(--konv-salmon-hover); font-weight: 600; }
+
+  /* ===== Stats ===== */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+  }
+  .stat .num { font-size: 1.9rem; font-weight: 700; color: var(--konv-black); line-height: 1.1; }
+  .stat .num.small { font-size: 1.15rem; }
+  .stat .lbl { font-size: 0.78rem; color: var(--konv-mid-gray); margin-top: 0.25rem; }
+
+  /* ===== Top dates ===== */
+  section h2.sec { font-size: 1.3rem; margin-bottom: 1rem; }
+  .top-dates { margin-bottom: 2rem; }
+  .top-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  .top-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    background: var(--konv-white);
+    border: 1px solid var(--konv-border);
+    border-left: 4px solid var(--konv-salmon);
+    border-radius: var(--konv-radius);
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+  .top-list .rank { font-weight: 700; color: var(--konv-salmon); }
+  .top-list .date { font-weight: 600; color: var(--konv-black); white-space: nowrap; }
+  .top-list .names { color: var(--konv-mid-gray); font-size: 0.82rem; }
+  .top-list .count {
+    margin-left: auto;
+    background: var(--konv-purple-ice);
+    color: var(--konv-purple);
+    border-radius: 99px;
+    padding: 0.1rem 0.6rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .top-empty { color: var(--konv-mid-gray); font-size: 0.9rem; }
+
+  /* ===== Calendars ===== */
+  .cal-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .cal-wrap.single { grid-template-columns: minmax(0, 560px); justify-content: center; }
+  .cal h3 { text-align: center; font-size: 1.05rem; margin-bottom: 0.9rem; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .dow {
+    text-align: center;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--konv-mid-gray);
+    text-transform: uppercase;
+    padding-bottom: 2px;
+  }
+  .cell {
+    position: relative;
+    min-height: 58px;
+    border: 1px solid var(--konv-border);
+    border-radius: var(--konv-radius);
+    padding: 4px 6px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: transform 0.08s, box-shadow 0.15s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .cell:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.1); transform: translateY(-1px); }
+  .cell .d { font-weight: 600; font-size: 0.8rem; color: var(--konv-black); }
+  .cell.empty { border: none; cursor: default; pointer-events: none; }
+  .cell.past { opacity: 0.35; cursor: default; pointer-events: none; }
+
+  /* Heatmap levels (share of max availability count) */
+  .cell[data-heat="1"] { background: var(--konv-salmon-light); }
+  .cell[data-heat="2"] { background: #FBD8CB; }
+  .cell[data-heat="3"] { background: #F9B49B; }
+  .cell[data-heat="4"] { background: var(--konv-salmon); }
+  .cell[data-heat="4"] .d { color: var(--konv-white); }
+
+  /* My selection */
+  .cell.mine { box-shadow: inset 0 0 0 2.5px var(--konv-purple); }
+  .cell.mine::after {
+    content: '✓';
+    position: absolute;
+    top: -7px;
+    right: -7px;
+    width: 18px;
+    height: 18px;
+    background: var(--konv-purple);
+    color: var(--konv-white);
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Attendee initials dots */
+  .who { display: flex; flex-wrap: wrap; gap: 2px; }
+  .dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    color: var(--konv-white);
+    font-size: 8.5px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255,255,255,0.7);
+  }
+  .cnt { display: none; font-size: 0.7rem; font-weight: 600; color: var(--konv-purple); }
+
+  /* ===== Legend ===== */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    align-items: center;
+    margin-top: 1.5rem;
+    font-size: 0.78rem;
+    color: var(--konv-mid-gray);
+  }
+  .legend .item { display: flex; align-items: center; gap: 0.4rem; }
+  .legend .sw {
+    width: 16px; height: 16px;
+    border-radius: 4px;
+    border: 1px solid var(--konv-border);
+    display: inline-block;
+  }
+
+  /* ===== Toast ===== */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 1.5rem;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--konv-purple);
+    color: var(--konv-white);
+    font-size: 0.85rem;
+    padding: 0.7rem 1.2rem;
+    border-radius: var(--konv-radius);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+    max-width: 90vw;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--konv-dark-gray); border-left: 4px solid var(--konv-salmon); }
+
+  footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--konv-border);
+    font-size: 0.75rem;
+    color: #808080;
+    text-align: center;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 940px) {
+    .cal-wrap { grid-template-columns: 1fr; }
+    .cal-wrap.single { grid-template-columns: 1fr; }
+    .hero { padding: 1.25rem 0 1rem; }
+  }
+  @media (max-width: 560px) {
+    .konv-header .tagline { display: none; }
+    .hero .art { display: none; }
+    main { padding: 1rem 0.75rem 4rem; }
+    .konv-card { padding: 1rem; }
+    .cal-grid { gap: 4px; }
+    .cell { min-height: 46px; padding: 3px 4px; }
+    .who { display: none; }
+    .cnt { display: block; }
+    .stat .num { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="konv-header">
+  <span class="konv-logo"><span class="mark">▌</span> Konversational</span>
+  <span class="tagline">/ Kwand — on trouve la date ensemble</span>
+</header>
+
+<main>
+  <div class="hero">
+    <div>
+      <h1><span class="konv-slash">/</span>Kwand</h1>
+      <p>L'outil maison pour organiser n'importe quoi : crée un événement, partage le lien,
+      chacun coche ses jours. Plus une case est <strong>saumon</strong>, plus il y a de monde,
+      et la date qui réunit le plus de participants gagne.</p>
+    </div>
+    <svg class="art" width="170" height="92" viewBox="0 0 170 92" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="8" y="14" width="104" height="70" rx="10" fill="#FEF2EF" stroke="#F69176" stroke-width="2.5"/>
+      <path d="M8 24 a10 10 0 0 1 10-10 h84 a10 10 0 0 1 10 10 v10 H8 Z" fill="#F69176"/>
+      <rect x="30" y="6" width="5" height="14" rx="2.5" fill="#333333"/>
+      <rect x="85" y="6" width="5" height="14" rx="2.5" fill="#333333"/>
+      <g fill="#E2E7FC">
+        <rect x="20" y="42" width="16" height="12" rx="3"/><rect x="42" y="42" width="16" height="12" rx="3"/>
+        <rect x="64" y="42" width="16" height="12" rx="3"/><rect x="86" y="42" width="16" height="12" rx="3"/>
+        <rect x="20" y="60" width="16" height="12" rx="3"/><rect x="86" y="60" width="16" height="12" rx="3"/>
+        <rect x="64" y="60" width="16" height="12" rx="3"/>
+      </g>
+      <rect x="42" y="60" width="16" height="12" rx="3" fill="#6435CE"/>
+      <text x="50" y="70" text-anchor="middle" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="10" font-weight="bold">✓</text>
+      <g stroke-linecap="round">
+        <path d="M128 74 L146 22" stroke="#F69176" stroke-width="7"/>
+        <path d="M144 74 L162 22" stroke="#C1AEEB" stroke-width="7"/>
+      </g>
+    </svg>
+  </div>
+
+  <div id="warning" class="warning">
+    <strong>Mode lecture seule :</strong> le token GitHub n'est pas configuré dans <code>index.html</code>
+    (voir le README du repo). Tu peux consulter les dispos mais rien enregistrer.
+  </div>
+
+  <!-- ===== List view ===== -->
+  <section id="viewList">
+    <div class="list-head">
+      <h2><span class="konv-slash">/</span>Événements</h2>
+      <button id="newEventBtn" class="konv-btn-primary">+ Créer un événement</button>
+    </div>
+
+    <div id="createForm" class="konv-card create-form" hidden>
+      <div class="field grow">
+        <label for="evTitle">Titre</label>
+        <input id="evTitle" type="text" maxlength="60" placeholder="ex. Soirée jeux de société">
+      </div>
+      <div class="field grow">
+        <label for="evDescInput">Description (optionnel)</label>
+        <input id="evDescInput" type="text" maxlength="140" placeholder="ex. Pizza offerte aux participants">
+      </div>
+      <div class="field">
+        <label for="evFrom">Du mois</label>
+        <input id="evFrom" type="month" placeholder="AAAA-MM">
+      </div>
+      <div class="field">
+        <label for="evTo">Au mois</label>
+        <input id="evTo" type="month" placeholder="AAAA-MM">
+      </div>
+      <button id="createBtn" class="konv-btn-primary">Créer</button>
+      <button id="cancelCreateBtn" class="konv-btn-outline">Annuler</button>
+    </div>
+
+    <div id="eventList" class="event-list"></div>
+    <p id="listEmpty" class="list-empty" hidden>Aucun événement pour l'instant. Crée le premier !</p>
+  </section>
+
+  <!-- ===== Event view ===== -->
+  <section id="viewEvent" hidden>
+    <a class="back" href="#/">← Tous les événements</a>
+    <div class="ev-head">
+      <h2><span class="konv-slash">/</span><span id="evHeading"></span></h2>
+      <span id="evPeriod" class="ev-period"></span>
+    </div>
+    <p id="evDesc" class="ev-desc"></p>
+
+    <div class="konv-card konv-card-accent savebar">
+      <label for="name">Ton prénom</label>
+      <input id="name" type="text" maxlength="30" placeholder="ex. Enzo" autocomplete="off">
+      <button id="saveBtn" class="konv-btn-primary">Enregistrer mes dispos</button>
+      <button id="refreshBtn" class="konv-btn-outline" title="Recharger les disponibilités">Actualiser</button>
+      <span id="saveStatus" class="save-status">Chargement des disponibilités…</span>
+    </div>
+
+    <div class="stats">
+      <div class="konv-card stat"><div class="num" id="statPeople">–</div><div class="lbl">participants</div></div>
+      <div class="konv-card stat"><div class="num small" id="statBest">–</div><div class="lbl">meilleure date</div></div>
+      <div class="konv-card stat"><div class="num" id="statSlots">–</div><div class="lbl">dispos cumulées</div></div>
+    </div>
+
+    <section class="top-dates">
+      <h2 class="sec"><span class="konv-slash">/</span>Top des dates</h2>
+      <ol id="topList" class="top-list"></ol>
+      <p id="topEmpty" class="top-empty">Aucune dispo enregistrée pour l'instant. Sois la première ou le premier&nbsp;!</p>
+    </section>
+
+    <section>
+      <h2 class="sec"><span class="konv-slash">/</span>Calendrier des dispos</h2>
+      <div id="calendars" class="cal-wrap"></div>
+      <div class="legend">
+        <span class="item"><span class="sw" style="background:#fff"></span> 0 dispo</span>
+        <span class="item"><span class="sw" style="background:var(--konv-salmon-light)"></span><span class="sw" style="background:#FBD8CB"></span><span class="sw" style="background:#F9B49B"></span><span class="sw" style="background:var(--konv-salmon)"></span> de peu à beaucoup de monde</span>
+        <span class="item"><span class="sw" style="box-shadow: inset 0 0 0 2.5px var(--konv-purple)"></span> tes jours sélectionnés</span>
+      </div>
+    </section>
+  </section>
+</main>
+
+<footer>© Konversational — www.konversational.com</footer>
+
+<div id="toast" class="toast"></div>
+
+<script>
+'use strict';
+
+/* ============================================================
+ * CONFIGURATION — edit this block only (see README.md)
+ * ============================================================ */
+const CONFIG = {
+  owner: 'YOUR_GITHUB_USERNAME',     // GitHub account or organization that owns the repo
+  repo: 'YOUR_REPO_NAME',            // repository name
+  branch: 'main',                    // branch that GitHub Pages serves
+  filePath: 'availability.json',     // data file inside the repo
+  maxMonthsPerEvent: 6,              // guard against huge calendars
+  // Fine-grained token, base64-encoded then split in two parts.
+  // Splitting + encoding prevents GitHub secret scanning from auto-revoking it.
+  // See README.md ("Configurer le token") for the 2-minute procedure.
+  tokenParts: ['', '']
+};
+
+/* ============================================================
+ * Pure helpers
+ * ============================================================ */
+const pad2 = function (n) { return String(n).padStart(2, '0'); };
+const isoOf = function (y, m, d) { return y + '-' + pad2(m) + '-' + pad2(d); };
+
+// Parse 'YYYY-MM-DD' as a LOCAL date (new Date(iso) would parse as UTC)
+function parseIso(iso) {
+  const p = iso.split('-').map(Number);
+  return new Date(p[0], p[1] - 1, p[2]);
+}
+
+// Today's date as ISO string, computed in the visitor's local timezone
+function todayIso() {
+  const n = new Date();
+  return isoOf(n.getFullYear(), n.getMonth() + 1, n.getDate());
+}
+
+// Current month as 'YYYY-MM', with an optional offset in months
+function ymWithOffset(offset) {
+  const n = new Date();
+  const d = new Date(n.getFullYear(), n.getMonth() + (offset || 0), 1);
+  return d.getFullYear() + '-' + pad2(d.getMonth() + 1);
+}
+
+function monthLabel(ym) {
+  const d = new Date(Number(ym.slice(0, 4)), Number(ym.slice(5, 7)) - 1, 1);
+  const label = new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(d);
+  return label.charAt(0).toUpperCase() + label.slice(1);
+}
+
+// Inclusive list of 'YYYY-MM' between two months; null if invalid or too long
+function monthsBetween(from, to) {
+  if (!/^\d{4}-\d{2}$/.test(from) || !/^\d{4}-\d{2}$/.test(to)) return null;
+  const idx = function (ym) { return Number(ym.slice(0, 4)) * 12 + Number(ym.slice(5, 7)) - 1; };
+  const a = idx(from), b = idx(to);
+  if (b < a || b - a + 1 > CONFIG.maxMonthsPerEvent) return null;
+  const out = [];
+  for (let i = a; i <= b; i++) out.push(Math.floor(i / 12) + '-' + pad2((i % 12) + 1));
+  return out;
+}
+
+function formatPeriod(months) {
+  if (!months.length) return '';
+  const first = monthLabel(months[0]);
+  const last = monthLabel(months[months.length - 1]);
+  return first === last ? first : first + ' – ' + last;
+}
+
+// URL-safe slug from an event title ('Soirée Jeux !' -> 'soiree-jeux')
+function slugify(title) {
+  const s = title.normalize('NFD').replace(/[̀-ͯ]/g, '')  // strip accents
+    .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
+    .slice(0, 50).replace(/-+$/g, '');
+  return s || 'evenement';
+}
+
+// Ensure slug uniqueness by suffixing -2, -3, ...
+function uniqueSlug(events, base) {
+  if (!events[base]) return base;
+  let i = 2;
+  while (events[base + '-' + i]) i++;
+  return base + '-' + i;
+}
+
+// Build the cell list for one 'YYYY-MM' month, Monday-first.
+// Returns { label, cells } where cells is null (filler) or { iso, day }.
+function buildMonthGrid(ym) {
+  const y = Number(ym.slice(0, 4));
+  const m = Number(ym.slice(5, 7));
+  const first = new Date(y, m - 1, 1);
+  const offset = (first.getDay() + 6) % 7;          // 0 = Monday
+  const daysInMonth = new Date(y, m, 0).getDate();
+  const cells = [];
+  for (let i = 0; i < offset; i++) cells.push(null);
+  for (let d = 1; d <= daysInMonth; d++) cells.push({ iso: isoOf(y, m, d), day: d });
+  return { label: monthLabel(ym), cells: cells };
+}
+
+function formatDateShort(iso) {
+  return new Intl.DateTimeFormat('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' }).format(parseIso(iso));
+}
+
+// Normalize a people map: keep only string->array entries with valid dates
+function readPeopleMap(src) {
+  const people = {};
+  if (!src || typeof src !== 'object') return people;
+  Object.keys(src).forEach(function (name) {
+    if (Array.isArray(src[name])) {
+      people[name] = src[name].filter(function (d) { return /^\d{4}-\d{2}-\d{2}$/.test(String(d)); });
+    }
+  });
+  return people;
+}
+
+// Normalize the events map for display (tolerates hand-edited JSON)
+function readEvents(data) {
+  const out = {};
+  const src = (data && typeof data.events === 'object' && data.events) || {};
+  Object.keys(src).forEach(function (id) {
+    const v = src[id];
+    if (!v || typeof v !== 'object') return;
+    const months = Array.isArray(v.months)
+      ? v.months.filter(function (m) { return /^\d{4}-\d{2}$/.test(String(m)); })
+      : [];
+    if (!months.length) return;                     // an event without months cannot render
+    out[id] = {
+      title: String(v.title || id),
+      description: v.description ? String(v.description) : '',
+      months: months,
+      created: v.created ? String(v.created) : '',
+      people: readPeopleMap(v.people)
+    };
+  });
+  return out;
+}
+
+// Case-insensitive lookup so 'enzo' and 'Enzo' stay one single entry
+function findExistingKey(people, name) {
+  const low = name.toLowerCase();
+  return Object.keys(people).find(function (k) { return k.toLowerCase() === low; }) || null;
+}
+
+// Aggregate counts per date + top dates + max count (for the heatmap scale)
+function computeStats(people) {
+  const byDate = {};                 // iso -> array of names
+  Object.keys(people).forEach(function (name) {
+    people[name].forEach(function (iso) {
+      (byDate[iso] = byDate[iso] || []).push(name);
+    });
+  });
+  let max = 0, totalSlots = 0;
+  Object.keys(byDate).forEach(function (iso) {
+    byDate[iso].sort(function (a, b) { return a.localeCompare(b, 'fr'); });
+    max = Math.max(max, byDate[iso].length);
+    totalSlots += byDate[iso].length;
+  });
+  const top = Object.keys(byDate)
+    .sort(function (a, b) { return byDate[b].length - byDate[a].length || a.localeCompare(b); })
+    .slice(0, 5)
+    .map(function (iso) { return { iso: iso, names: byDate[iso] }; });
+  return { byDate: byDate, max: max, top: top, totalSlots: totalSlots, participants: Object.keys(people).length };
+}
+
+function setEquals(a, b) {
+  if (a.size !== b.size) return false;
+  for (const x of a) if (!b.has(x)) return false;
+  return true;
+}
+
+/* Unicode-safe base64 helpers (titles and names may contain accents) */
+function utf8ToB64(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  bytes.forEach(function (b) { bin += String.fromCharCode(b); });
+  return btoa(bin);
+}
+function b64ToUtf8(b64) {
+  const clean = b64.replace(/\s/g, '');            // API returns base64 with newlines
+  const bytes = Uint8Array.from(atob(clean), function (c) { return c.charCodeAt(0); });
+  return new TextDecoder().decode(bytes);
+}
+
+// Deterministic brand color per person (for the initials dots)
+const DOT_COLORS = ['#6435CE', '#F69176', '#C1AEEB', '#E87D5F', '#4A4A4A', '#8B5CF0'];
+function dotColor(name) {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+  return DOT_COLORS[h % DOT_COLORS.length];
+}
+
+/* ============================================================
+ * GitHub API layer
+ * ============================================================ */
+function getToken() {
+  const joined = CONFIG.tokenParts.join('');
+  if (!joined) return '';
+  try { return atob(joined); } catch (e) { return ''; }
+}
+
+function ghHeaders() {
+  const h = {
+    'Accept': 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28'
+  };
+  const t = getToken();
+  if (t) h['Authorization'] = 'Bearer ' + t;
+  return h;
+}
+
+function friendlyHttpError(status) {
+  if (status === 401) return new Error('Token invalide ou expiré : regénère-le (voir README).');
+  if (status === 403) return new Error('Accès refusé ou quota API atteint. Réessaie dans quelques minutes.');
+  if (status === 404) return new Error('Repo ou fichier introuvable : vérifie owner / repo / filePath dans CONFIG.');
+  return new Error('Erreur GitHub (HTTP ' + status + ').');
+}
+
+// Read the data file through the API (returns raw parsed data + blob sha)
+async function fetchData() {
+  const url = 'https://api.github.com/repos/' + CONFIG.owner + '/' + CONFIG.repo +
+    '/contents/' + CONFIG.filePath + '?ref=' + CONFIG.branch + '&cb=' + Date.now(); // cb busts browser cache
+  const res = await fetch(url, { headers: ghHeaders() });
+  if (!res.ok) throw friendlyHttpError(res.status);
+  const json = await res.json();
+  return { data: JSON.parse(b64ToUtf8(json.content)), sha: json.sha };
+}
+
+// Write the data file (one commit per action)
+function putData(data, sha, message) {
+  return fetch('https://api.github.com/repos/' + CONFIG.owner + '/' + CONFIG.repo + '/contents/' + CONFIG.filePath, {
+    method: 'PUT',
+    headers: Object.assign(ghHeaders(), { 'Content-Type': 'application/json' }),
+    body: JSON.stringify({
+      message: message,
+      content: utf8ToB64(JSON.stringify(data, null, 2) + '\n'),
+      sha: sha,
+      branch: CONFIG.branch
+    })
+  });
+}
+
+// Generic read-merge-write with retry on sha conflict. The mutate callback
+// touches ONLY its own slice of the JSON, so concurrent saves from two
+// visitors cannot erase each other. Returns the data that was committed.
+async function commitMerge(mutate, message) {
+  let lastErr = new Error('Enregistrement impossible.');
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const fresh = await fetchData();               // always merge into the latest version
+    const data = (fresh.data && typeof fresh.data === 'object') ? fresh.data : {};
+    if (!data.events || typeof data.events !== 'object') data.events = {};
+    const msg = mutate(data);                      // may throw, may refine the message
+    data.tool = 'Kwand';
+    data.updated = new Date().toISOString();
+    const res = await putData(data, fresh.sha, msg || message);
+    if (res.ok) return data;
+    if (res.status === 409 || res.status === 422) { // sha conflict: someone saved in between, retry
+      lastErr = new Error('Conflit d\'édition : réessaie.');
+      continue;
+    }
+    throw friendlyHttpError(res.status);
+  }
+  throw lastErr;
+}
+
+// Replace only this person's dates inside one event
+function saveMyDates(eventId, name, dates) {
+  return commitMerge(function (data) {
+    const ev = data.events[eventId];
+    if (!ev || typeof ev !== 'object') throw new Error('Cet événement n\'existe plus.');
+    if (!ev.people || typeof ev.people !== 'object') ev.people = {};
+    const key = findExistingKey(readPeopleMap(ev.people), name) || name;
+    if (dates.length) ev.people[key] = dates.slice().sort();
+    else delete ev.people[key];
+    return 'Kwand: ' + key + ' → ' + eventId + ' (' + dates.length + ' jour' + (dates.length > 1 ? 's' : '') + ')';
+  });
+}
+
+// Add a new event; returns { data, id }
+async function createEvent(title, description, months) {
+  let id = '';
+  const data = await commitMerge(function (d) {
+    id = uniqueSlug(d.events, slugify(title));
+    d.events[id] = {
+      title: title,
+      description: description,
+      months: months,
+      created: new Date().toISOString(),
+      people: {}
+    };
+    return 'Kwand: création de "' + title + '"';
+  });
+  return { data: data, id: id };
+}
+
+/* ============================================================
+ * State + routing
+ * ============================================================ */
+const state = {
+  events: {},          // normalized events from the server
+  currentId: null,     // event shown in the event view (null = list view)
+  myDates: new Set(),  // local selection (may differ from server until saved)
+  saving: false,
+  loaded: false
+};
+const TODAY = todayIso();
+const DOW = ['lun', 'mar', 'mer', 'jeu', 'ven', 'sam', 'dim'];
+
+const $ = function (id) { return document.getElementById(id); };
+const els = {
+  warning: $('warning'), viewList: $('viewList'), viewEvent: $('viewEvent'),
+  newEventBtn: $('newEventBtn'), createForm: $('createForm'), evTitle: $('evTitle'),
+  evDescInput: $('evDescInput'), evFrom: $('evFrom'), evTo: $('evTo'),
+  createBtn: $('createBtn'), cancelCreateBtn: $('cancelCreateBtn'),
+  eventList: $('eventList'), listEmpty: $('listEmpty'),
+  evHeading: $('evHeading'), evPeriod: $('evPeriod'), evDesc: $('evDesc'),
+  name: $('name'), saveBtn: $('saveBtn'), refreshBtn: $('refreshBtn'),
+  saveStatus: $('saveStatus'), statPeople: $('statPeople'), statBest: $('statBest'),
+  statSlots: $('statSlots'), topList: $('topList'), topEmpty: $('topEmpty'),
+  calendars: $('calendars'), toast: $('toast')
+};
+
+function currentEvent() { return state.currentId ? state.events[state.currentId] : null; }
+
+function hashEventId() {
+  const m = window.location.hash.match(/^#\/e\/([A-Za-z0-9-]+)$/);
+  return m ? m[1] : null;
+}
+
+let toastTimer = null;
+function showToast(msg, isError) {
+  els.toast.textContent = msg;
+  els.toast.classList.toggle('error', !!isError);
+  els.toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { els.toast.classList.remove('show'); }, 3500);
+}
+
+function currentName() { return els.name.value.trim().replace(/\s+/g, ' '); }
+
+function myServerDates() {
+  const ev = currentEvent();
+  if (!ev) return new Set();
+  const key = findExistingKey(ev.people, currentName() || ' ');
+  return new Set(key ? ev.people[key] : []);
+}
+
+function isDirty() {
+  if (!state.loaded || !currentEvent()) return false;
+  return !setEquals(state.myDates, myServerDates());
+}
+
+/* ============================================================
+ * Rendering
+ * ============================================================ */
+function renderStatus() {
+  els.saveStatus.textContent = '';
+  if (!state.loaded) { els.saveStatus.textContent = 'Chargement des disponibilités…'; return; }
+  const t = new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit' }).format(new Date());
+  els.saveStatus.append('Données à jour à ' + t + '. ');
+  if (isDirty()) {
+    const s = document.createElement('span');
+    s.className = 'dirty';
+    s.textContent = 'Sélection modifiée, pense à enregistrer.';
+    els.saveStatus.appendChild(s);
+  }
+}
+
+function renderList() {
+  els.eventList.textContent = '';
+  const ids = Object.keys(state.events).sort(function (a, b) {
+    return String(state.events[b].created).localeCompare(String(state.events[a].created)) ||
+      state.events[a].title.localeCompare(state.events[b].title, 'fr');
+  });
+  els.listEmpty.hidden = !(state.loaded && ids.length === 0);
+  ids.forEach(function (id) {
+    const ev = state.events[id];
+    const stats = computeStats(ev.people);
+    const card = document.createElement('div');
+    card.className = 'konv-card event-card';
+    card.setAttribute('role', 'link');
+    card.tabIndex = 0;
+
+    const title = document.createElement('div'); title.className = 'title'; title.textContent = ev.title;
+    const period = document.createElement('div'); period.className = 'period'; period.textContent = formatPeriod(ev.months);
+    const meta = document.createElement('div'); meta.className = 'meta';
+    meta.textContent = stats.participants
+      ? stats.participants + ' participant' + (stats.participants > 1 ? 's' : '') +
+        ' · meilleure date : ' + formatDateShort(stats.top[0].iso) + ' (' + stats.top[0].names.length + ')'
+      : 'Aucune dispo pour l\'instant';
+    const go = document.createElement('div'); go.className = 'go'; go.textContent = 'Voir les dispos →';
+    card.append(title, period, meta, go);
+
+    const open = function () { window.location.hash = '#/e/' + id; };
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', function (e) { if (e.key === 'Enter') open(); });
+    els.eventList.appendChild(card);
+  });
+}
+
+function renderStats(stats) {
+  els.statPeople.textContent = stats.participants;
+  els.statSlots.textContent = stats.totalSlots;
+  els.statBest.textContent = stats.top.length ? formatDateShort(stats.top[0].iso) : '–';
+}
+
+function renderTop(stats) {
+  els.topList.textContent = '';
+  els.topEmpty.style.display = stats.top.length ? 'none' : 'block';
+  stats.top.forEach(function (entry, i) {
+    const li = document.createElement('li');
+    const rank = document.createElement('span'); rank.className = 'rank'; rank.textContent = (i + 1) + '.';
+    const date = document.createElement('span'); date.className = 'date'; date.textContent = formatDateShort(entry.iso);
+    const names = document.createElement('span'); names.className = 'names'; names.textContent = entry.names.join(', ');
+    const count = document.createElement('span'); count.className = 'count';
+    count.textContent = entry.names.length + (entry.names.length > 1 ? ' personnes' : ' personne');
+    li.append(rank, date, names, count);
+    els.topList.appendChild(li);
+  });
+}
+
+function renderCalendars(ev, stats) {
+  els.calendars.textContent = '';
+  els.calendars.classList.toggle('single', ev.months.length === 1);
+  ev.months.forEach(function (ym) {
+    const month = buildMonthGrid(ym);
+    const card = document.createElement('div');
+    card.className = 'konv-card cal';
+    const h3 = document.createElement('h3');
+    const slash = document.createElement('span'); slash.className = 'konv-slash'; slash.textContent = '/';
+    h3.append(slash, month.label);
+    const grid = document.createElement('div');
+    grid.className = 'cal-grid';
+    DOW.forEach(function (d) {
+      const el = document.createElement('div'); el.className = 'dow'; el.textContent = d;
+      grid.appendChild(el);
+    });
+    month.cells.forEach(function (c) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      if (!c) { cell.classList.add('empty'); grid.appendChild(cell); return; }
+      cell.dataset.date = c.iso;
+      const dayNum = document.createElement('span'); dayNum.className = 'd'; dayNum.textContent = c.day;
+      cell.appendChild(dayNum);
+      const names = stats.byDate[c.iso] || [];
+      if (names.length) {
+        // Heat level 1..4 relative to the busiest day of this event
+        cell.dataset.heat = Math.max(1, Math.ceil(names.length / stats.max * 4));
+        cell.setAttribute('title', names.join(', '));   // hover tooltip (desktop)
+        const who = document.createElement('div'); who.className = 'who';
+        names.slice(0, 3).forEach(function (n) {
+          const dot = document.createElement('span');
+          dot.className = 'dot';
+          dot.style.background = dotColor(n);
+          dot.textContent = (n.trim()[0] || '?').toUpperCase();
+          who.appendChild(dot);
+        });
+        if (names.length > 3) {
+          const more = document.createElement('span');
+          more.className = 'dot';
+          more.style.background = 'var(--konv-mid-gray)';
+          more.textContent = '+' + (names.length - 3);
+          who.appendChild(more);
+        }
+        cell.appendChild(who);
+        const cnt = document.createElement('span'); cnt.className = 'cnt'; cnt.textContent = names.length;
+        cell.appendChild(cnt);
+      }
+      if (c.iso < TODAY) cell.classList.add('past');
+      if (state.myDates.has(c.iso)) cell.classList.add('mine');
+      grid.appendChild(cell);
+    });
+    card.append(h3, grid);
+    els.calendars.appendChild(card);
+  });
+}
+
+function renderEvent() {
+  const ev = currentEvent();
+  if (!ev) return;
+  const stats = computeStats(ev.people);
+  els.evHeading.textContent = ev.title;
+  els.evPeriod.textContent = formatPeriod(ev.months);
+  els.evDesc.textContent = ev.description;
+  els.evDesc.hidden = !ev.description;
+  renderStats(stats);
+  renderTop(stats);
+  renderCalendars(ev, stats);
+  renderStatus();
+}
+
+function renderAll() {
+  const onEvent = !!currentEvent();
+  els.viewList.hidden = onEvent;
+  els.viewEvent.hidden = !onEvent;
+  if (onEvent) renderEvent();
+  else renderList();
+}
+
+/* ============================================================
+ * Actions
+ * ============================================================ */
+async function refresh(silent) {
+  try {
+    const fresh = await fetchData();
+    state.events = readEvents(fresh.data);
+    state.loaded = true;
+    // The current event may have been removed from the JSON meanwhile
+    if (state.currentId && !state.events[state.currentId]) {
+      state.currentId = null;
+      window.location.hash = '#/';
+      showToast('Cet événement n\'existe plus.', true);
+    }
+    renderAll();
+    if (!silent) showToast('Disponibilités actualisées.');
+  } catch (e) {
+    if (!silent) showToast(e.message, true);
+    else if (!state.loaded) { els.saveStatus.textContent = 'Erreur de chargement : ' + e.message; }
+  }
+}
+
+async function onSave() {
+  const name = currentName();
+  if (!currentEvent()) return;
+  if (!name) { showToast('Entre ton prénom d\'abord.', true); els.name.focus(); return; }
+  if (!getToken()) { showToast('Token non configuré : enregistrement impossible (voir README).', true); return; }
+  if (state.myDates.size === 0 && myServerDates().size > 0) {
+    if (!confirm('Aucun jour sélectionné : tu seras retiré(e) de la liste. Continuer ?')) return;
+  }
+  state.saving = true;
+  els.saveBtn.disabled = true;
+  els.saveBtn.textContent = 'Enregistrement…';
+  try {
+    const data = await saveMyDates(state.currentId, name, Array.from(state.myDates));
+    state.events = readEvents(data);
+    localStorage.setItem('kwand.name', name);
+    showToast('C\'est noté, ' + name + ' ! ' + state.myDates.size + ' jour' + (state.myDates.size > 1 ? 's' : '') + ' enregistré' + (state.myDates.size > 1 ? 's' : '') + '.');
+  } catch (e) {
+    showToast(e.message, true);
+  } finally {
+    state.saving = false;
+    els.saveBtn.disabled = false;
+    els.saveBtn.textContent = 'Enregistrer mes dispos';
+    renderAll();
+  }
+}
+
+async function onCreate() {
+  const title = els.evTitle.value.trim();
+  const description = els.evDescInput.value.trim();
+  if (!title) { showToast('Donne un titre à ton événement.', true); els.evTitle.focus(); return; }
+  if (!getToken()) { showToast('Token non configuré : création impossible (voir README).', true); return; }
+  const months = monthsBetween(els.evFrom.value, els.evTo.value);
+  if (!months) {
+    showToast('Période invalide : format AAAA-MM, du plus tôt au plus tard, ' + CONFIG.maxMonthsPerEvent + ' mois max.', true);
+    return;
+  }
+  els.createBtn.disabled = true;
+  els.createBtn.textContent = 'Création…';
+  try {
+    const res = await createEvent(title, description, months);
+    state.events = readEvents(res.data);
+    els.createForm.hidden = true;
+    els.evTitle.value = '';
+    els.evDescInput.value = '';
+    showToast('Événement créé ! Partage le lien de la page.');
+    window.location.hash = '#/e/' + res.id;          // triggers route() -> event view
+  } catch (e) {
+    showToast(e.message, true);
+    renderAll();
+  } finally {
+    els.createBtn.disabled = false;
+    els.createBtn.textContent = 'Créer';
+  }
+}
+
+function onCellClick(ev) {
+  const cell = ev.target.closest('.cell');
+  if (!cell || !cell.dataset.date) return;
+  const iso = cell.dataset.date;
+  if (state.myDates.has(iso)) state.myDates.delete(iso);
+  else state.myDates.add(iso);
+  renderAll();
+}
+
+// When the visitor types an existing name and has no local selection yet,
+// preload that person's saved dates so they can edit them.
+function onNameChange() {
+  const server = myServerDates();
+  if (server.size && state.myDates.size === 0) {
+    state.myDates = new Set(server);
+    renderAll();
+  } else {
+    renderStatus();
+  }
+}
+
+// Route from the URL hash: '#/e/<id>' -> event view, anything else -> list
+function route() {
+  state.currentId = hashEventId();
+  state.myDates = new Set();
+  renderAll();
+  if (currentEvent()) onNameChange();               // preload my saved dates for this event
+}
+
+/* ============================================================
+ * Init
+ * ============================================================ */
+(function init() {
+  if (!getToken()) els.warning.classList.add('visible');
+  els.name.value = localStorage.getItem('kwand.name') || '';
+  els.evFrom.value = ymWithOffset(0);
+  els.evTo.value = ymWithOffset(1);
+
+  els.calendars.addEventListener('click', onCellClick);
+  els.saveBtn.addEventListener('click', onSave);
+  els.refreshBtn.addEventListener('click', function () { refresh(false); });
+  els.name.addEventListener('change', onNameChange);
+  els.newEventBtn.addEventListener('click', function () {
+    els.createForm.hidden = !els.createForm.hidden;
+    if (!els.createForm.hidden) els.evTitle.focus();
+  });
+  els.cancelCreateBtn.addEventListener('click', function () { els.createForm.hidden = true; });
+  els.createBtn.addEventListener('click', onCreate);
+  // Warn before leaving an event with unsaved selection (back link click)
+  document.querySelector('.back').addEventListener('click', function (e) {
+    if (isDirty() && !confirm('Ta sélection n\'est pas enregistrée. Quitter quand même ?')) e.preventDefault();
+  });
+  window.addEventListener('hashchange', route);
+  window.addEventListener('beforeunload', function (e) {
+    if (isDirty()) { e.preventDefault(); e.returnValue = ''; }
+  });
+
+  // Silent background refresh (only with a token: unauthenticated quota
+  // is 60 req/h per IP, shared by the whole office)
+  if (getToken()) {
+    setInterval(function () {
+      if (!document.hidden && !state.saving) refresh(true);
+    }, 90000);
+  }
+
+  state.currentId = hashEventId();
+  renderAll();                                       // paint the shell immediately
+  refresh(true).then(function () { route(); });      // then load data and route
+})();
+</script>
+</body>
+</html>
