@@ -1,6 +1,6 @@
 {
   "tool": "Kwand",
-  "updated": "2026-07-31T12:15:31.333Z",
+  "updated": "2026-07-31T12:20:49.547Z",
   "events": {
     "soiree-montage-salle-de-sport": {
       "title": "Soirée montage salle de sport",
@@ -100,6 +100,10 @@
         ],
         "Quentin": [
           "2026-08-05",
+          "2026-08-06",
+          "2026-08-13"
+        ],
+        "Luna": [
           "2026-08-06",
           "2026-08-13"
         ]
